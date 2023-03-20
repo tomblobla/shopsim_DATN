@@ -1,0 +1,84 @@
+<!-- extends -->
+{% extends "base.html" %}
+<!-- load -->
+{% load static %}
+<!-- load -->
+{% load humanize %}
+<!-- Banner -->
+{% block content %}
+<style>
+  .bannerbgr {
+    background-image: url("{% static "images/banner_background.jpg" %}");
+  }
+
+  .valign {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    /* vendor prefixes omitted due to brevity */
+  }
+</style>
+
+<!-- Banner -->
+
+<div class="banner">
+  <div class="banner_background bannerbgr"></div>
+  <div class="container fill_height">
+    <div class="row fill_height">
+      <div class="banner_product_image">
+        <img src="{% static 'images/banner_product.png' %}" alt="" />
+      </div>
+      <div class="col-lg-5 offset-lg-4 fill_height">
+        <div class="banner_content">
+          <h1 class="banner_text">Sim Minh Vũ</h1>
+          <div class="banner_price"><span>900k</span>500k</div>
+          <div class="banner_product_name">Sim số đẹp giá rẻ chỉ từ 500k</div>
+          <div class="button banner_button"><a href="#">Mua ngay</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="characteristics">
+  <div class="container">
+    <h1 class="banner_text" style="font-size: 20px; padding-bottom: 10px">Sim số đẹp</h1>
+    <div class="row">
+      {% for prod in products %}
+      <!-- Char. Item -->
+      <div class="col-lg-4 col-md-6 char_col mb-3">
+        <div
+          class="char_item d-flex flex-row align-items-center justify-content-start"
+        >
+          <div class="char_icon">
+            <img src="{{ prod.category_image }}" alt="" />
+          </div>
+          <div class="char_content">
+            <div class="char_title"><a href="/shop/{{prod.category_slug}}/{{ prod.slug }}">{{ prod.name }}</a></div>
+            <div class="char_subtitle">
+				{{ prod.get_saleprice|floatformat:0|intcomma:False }} VNĐ
+				<small class="text-danger">(-{{ prod.sale_off }}%)</small>
+			</div>
+          </div>
+          <div
+            style="
+              position: absolute;
+              right: 25px;
+              top: 23px;
+              height: 50px;
+              margin: auto;
+            "
+            class="button banner_button my-0"
+          >
+            <a href="#" class="valign" style="padding: 0 20px">
+              <i class="fas fa-shopping-cart"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

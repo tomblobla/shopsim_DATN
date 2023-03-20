@@ -1,0 +1,148 @@
+<!-- extends -->
+{% extends "shopbase.html" %}
+<!-- load -->
+{% load static %}
+<!-- load -->
+{% load humanize %}
+<!-- Banner -->
+{% block content %}
+<style>
+
+</style>
+
+<!-- Home -->
+
+<div class="home">
+	<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{% static 'images/shop_background.jpg' %}"></div>
+	<div class="home_overlay"></div>
+	<div class="home_content d-flex flex-column align-items-center justify-content-center">
+		<h2 class="home_title">Chọn sim mà bạn mong muốn</h2>
+	</div>
+</div>
+
+<!-- Shop -->
+
+<div class="shop">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-3">
+
+				<!-- Shop Sidebar -->
+				<div class="shop_sidebar">
+					<div class="sidebar_section">
+						<div class="sidebar_title">Loại sim</div>
+						<ul class="sidebar_categories">
+							{% for tag in tags %}
+							<li><a class="brand" href="/shop/loai-sim/{{tag.id}}">Sim {{tag.name}} ({{tag.products|length}})</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+					<div class="sidebar_section">
+						<div class="sidebar_subtitle">Nhà mạng</div>
+						<ul class="brands_list">
+							{% for cate in categories %}
+							<li><a href="/shop/{{cate.slug}}">{{cate.name}} ({{cate.products|length}})</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="col-lg-9">
+				
+				<!-- Shop Content -->
+
+				<div class="shop_content">
+					<div class="shop_bar clearfix">
+						<div class="shop_product_count"><span>{{products|length}}</span> sim</div>
+						<div class="shop_sorting">
+							<span>Sắp xếp: </span>
+							<ul>
+								<li>
+									<span class="sorting_text">Giá tăng dần<i class="fas fa-chevron-down"></span></i>
+									<ul>
+										<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "price_increasing" }'>Giá tăng dần</li>
+										<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "price_decreasing" }'>Giá giảm dần</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="product_grid row pt-3 pl-4">
+						<div class="product_grid_border"></div>
+
+						<!-- Product Item -->
+						{% comment %} <div class="product_item is_new">
+							<div class="product_border"></div>
+							<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_5.jpg" alt=""></div>
+							<div class="product_content">
+								<div class="product_price">$225</div>
+								<div class="product_name"><div><a href="#" tabindex="0">Philips BT6900A</a></div></div>
+							</div>
+							<div class="product_fav"><i class="fas fa-heart"></i></div>
+							<ul class="product_marks">
+								<li class="product_mark product_discount">-25%</li>
+								<li class="product_mark product_new">new</li>
+							</ul>
+						</div> {% endcomment %}
+						{% for prod in products %}
+						<!-- Char. Item -->
+							<div class="col-md-6 char_col mb-3">
+								<div
+								class="char_item d-flex flex-row align-items-center justify-content-start"
+								>
+								<div class="char_icon">
+									<img src="{{ prod.category_image }}" alt="" />
+								</div>
+								<div class="char_content">
+									<div class="char_title"><a href="/shop/{{prod.category_slug}}/{{ prod.slug }}">{{ prod.name }}</a></div>
+									<div class="char_subtitle">
+										{{ prod.get_saleprice|floatformat:0|intcomma:False }} VNĐ
+										{% if prod.sale_off > 0 %}
+										<small class="text-danger">(-{{ prod.sale_off }}%)</small>
+										{% endif %}
+									</div>
+								</div>
+								<div
+									style="
+									position: absolute;
+									right: 25px;
+									top: 23px;
+									height: 50px;
+									margin: auto;
+									"
+									class="button banner_button my-0"
+								>
+									<a href="#" class="valign" style="padding: 0 20px">
+									<i class="fas fa-shopping-cart"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+
+					</div>
+
+					<!-- Shop Page Navigation -->
+
+					<div class="shop_page_nav d-flex flex-row">
+						<div class="page_prev d-flex flex-column align-items-center justify-content-center"><i class="fas fa-chevron-left"></i></div>
+						<ul class="page_nav d-flex flex-row">
+							<li><a href="#">1</a></li>
+							<li><a href="#">2</a></li>
+							<li><a href="#">3</a></li>
+							<li><a href="#">...</a></li>
+							<li><a href="#">21</a></li>
+						</ul>
+						<div class="page_next d-flex flex-column align-items-center justify-content-center"><i class="fas fa-chevron-right"></i></div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}
