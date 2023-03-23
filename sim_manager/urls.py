@@ -17,5 +17,4 @@ from django.urls import path
 from sim_manager import views
 
 urlpatterns = [
-    path('sim/tags', views.tags, name='tags'),
 ]

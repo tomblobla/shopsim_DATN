@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf import settings
+from. import views
 from django.conf.urls.static import static
 from django.urls import include, path
 
@@ -23,4 +24,7 @@ urlpatterns = [
     path('jet/dashboard/', include('jet.dashboard.urls',
          'jet-dashboard')),  # Django JET dashboard URLS
     path('admin/', admin.site.urls),
+    path('cua-hang/', views.shop, name='cua-hang'),
+    path('trang-chu/', views.home, name='trang-chu'),
+    path('', views.home, name='home'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

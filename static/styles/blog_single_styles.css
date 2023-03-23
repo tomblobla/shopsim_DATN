@@ -40,7 +40,7 @@
 }
 body
 {
-	font-family: 'Rubik', sans-serif;
+	font-family: sans-serif;
 	font-size: 14px;
 	font-weight: 400;
 	background: #FFFFFF;
@@ -61,7 +61,7 @@ ul
 }
 p
 {
-	font-family: 'Rubik', sans-serif;
+	font-family: sans-serif;
 	font-size: 14px;
 	line-height: 1.7;
 	font-weight: 400;
@@ -118,7 +118,7 @@ h4{font-size: 18px;}
 h5{font-size: 14px;}
 h1, h2, h3, h4, h5, h6
 {
-	font-family: 'Rubik', sans-serif;
+	font-family: sans-serif;
 	font-weight: 500;
 	-webkit-font-smoothing: antialiased;
 	-webkit-text-shadow: rgba(0,0,0,.01) 0 0 1px;
@@ -574,7 +574,7 @@ section
 {
 	display: block;
 	position: relative;
-	width: calc((100% - 50px) * 0.601);
+	width: 100%;
 	height: 100%;
 	line-height: 50px;
 	border: none !important;
@@ -1591,7 +1591,7 @@ select option
 }
 .footer_column ul:first-of-type
 {
-	margin-top: 21px;
+	margin-top: 0px;
 }
 .footer_column ul
 {

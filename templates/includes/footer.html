@@ -1,21 +1,73 @@
 {% load static %}
 
 <!-- ========================= FOOTER ========================= -->
-<footer class="section-footer border-top">
+<footer class="footer">
   <div class="container">
-    <section class="footer-bottom border-top row">
-      <div class="col-md-2 text-muted">
-        <span class="px-1 fa-lg far fa-copyright"> </span> 2022 Trovi1203
+    <div class="row">
+      <div class="col-lg-3 footer_col">
+        <div class="footer_column footer_contact">
+          <div class="logo_container">
+            <div class="logo"><a href="#">Sim Minh Vũ</a></div>
+          </div>
+          <div class="footer_title">Liên hệ tư vấn 24/7</div>
+          <div class="footer_phone">+84 0342 977 158</div>
+          <div class="footer_contact_text">
+            <p>219A5A Lưu Chí Hiếu, Phường 10</p>
+            <p>Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu</p>
+          </div>
+          <div class="footer_social">
+            <ul>
+              <li>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+              </li>
+              <li>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="col-md-8 text-md-center text-muted">
-        <span class="px-1 fa-lg fa-location-dot fa-solid"> </span>
-        219A5A, Đường Lưu Chí Hiếu, Phường 10, Thành phố Vũng Tàu
+      <div class="vr"></div>
+      <div class="col-lg-2 offset-lg-1">
+        <div class="footer_column">
+          <div class="footer_title">Nhà mạng</div>
+          <ul class="footer_list">
+            {% for net in networks %}
+            <li><a href="/nha-mang/{{net.slug}}">{{net.name}}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
-      <div class="col-md-2 text-md-right text-muted">
-        <span class="px-1 fa-lg fa-phone fa-solid"></span> 0342 977 158
+      <div class="vr"></div>
+      <div class="col-lg-2 offset-lg-1">
+        <div class="footer_column">
+          <div class="footer_title">Sim số đẹp</div>
+          <ul class="footer_list">
+            {% for tag in tags %}
+            <li><a href="/sim-so-dep/{{tag.slug}}">{{tag.name}}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
-    </section>
+      <div class="vr"></div>
+      <div class="col-lg-2 offset-lg-1">
+        <div class="footer_column">
+          <div class="footer_title">Customer Care</div>
+          <ul class="footer_list">
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">Order Tracking</a></li>
+            <li><a href="#">Wish List</a></li>
+            <li><a href="#">Customer Services</a></li>
+            <li><a href="#">Returns / Exchange</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Product Support</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
-  <!-- //container -->
 </footer>
 <!-- ========================= FOOTER END // ========================= -->

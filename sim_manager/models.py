@@ -14,7 +14,7 @@ class Tag(models.Model):
         
     def sim_count(self):
         return self.sims.count()
-    sim_count.short_description = "Số lượng SIM khả dụng"
+    sim_count.short_description = "Số lượng SIM"
     
     def __str__(self):
         return self.name

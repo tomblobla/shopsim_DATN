@@ -3,6 +3,7 @@
 <header class="header">
   <!-- Top Bar -->
 
+  {% comment %}
   <div class="top_bar">
     <div class="container">
       <div class="row">
@@ -22,15 +23,30 @@
           <div class="top_bar_content ml-auto">
             <div class="top_bar_user">
               {% if user.is_authenticated %}
-                <div class="dropdown">
-                  <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  
-                    Chao xìn, {{ user.first_name }}
-                  </button>
-                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" type="button" href="accounts/change_password">Đổi mật khẩu</a>
-                    <a class="dropdown-item" type="button" href="accounts/logout">Thoát</a>
-                  </div>
+              <div class="btn-gr">
+                <a
+                  class="btn dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                >
+                  Chao xìn, {{ user.username }}
+                </a>
+                <div
+                  class="dropdown-menu dropdown-menu-right"
+                  aria-labelledby="dropdownMenuButton"
+                >
+                  <a
+                    class="dropdown-item"
+                    type="button"
+                    href="accounts/change_password"
+                    >Đổi mật khẩu</a
+                  >
+                  <a class="dropdown-item" type="button" href="accounts/logout"
+                    >Thoát</a
+                  >
                 </div>
+              </div>
               {% else %}
               <div class="user_icon">
                 <img src="{% static 'images/user.svg' %}" alt="" />
@@ -44,6 +60,7 @@
       </div>
     </div>
   </div>
+  {% endcomment %}
 
   <!-- Header Main -->
 
@@ -53,10 +70,11 @@
         <!-- Logo -->
         <div class="col-lg-2 col-sm-3 col-3 order-1">
           <div class="logo_container">
-            <a href="/"><img
-              class="logo"
-              src="{% static './images/logo.png' %}"
-              style="max-height: 50px; position: relative"
+            <a href="/"
+              ><img
+                class="logo"
+                src="{% static './images/logo.png' %}"
+                style="max-height: 50px; position: relative"
             /></a>
           </div>
         </div>
@@ -66,24 +84,15 @@
           <div class="header_search">
             <div class="header_search_content">
               <div class="header_search_form_container">
-                <form action="#" class="header_search_form clearfix">
+                <form action="#" class="header_search_form">
+                <form action="#">
                   <input
                     type="search"
                     required="required"
                     class="header_search_input"
-                    placeholder="Tìm kiếm sim"
+                    placeholder="Tìm kiếm sim (Cú pháp: Số đầu-Số cuối, VD: 08-99)"
+                    style="padding-left: 15px"
                   />
-                  <div class="custom_dropdown" style="padding-left:11px; float:right">
-											<div class="custom_dropdown_list">
-												<span class="custom_dropdown_placeholder clc">Nhà mạng</span>
-												<i class="fas fa-chevron-down"></i>
-												<ul class="custom_list clc">
-                          {% for cate in Categories %}
-                          <li><a class="clc" href="#">{{cate.name}}</a></li>
-                          {% endfor %}
-												</ul>
-											</div>
-										</div>
                   <button
                     type="submit"
                     class="header_search_button trans_300"
@@ -117,6 +126,30 @@
                 </div>
               </div>
             </div>
+            <div class="btn-group">
+              <a
+                class="btn dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+              >
+                Chao xìn, {{ user.username }}
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-right"
+                aria-labelledby="dropdownMenuButton"
+              >
+                <a
+                  class="dropdown-item"
+                  type="button"
+                  href="accounts/change_password"
+                  >Đổi mật khẩu</a
+                >
+                <a class="dropdown-item" type="button" href="accounts/logout"
+                  >Thoát</a
+                >
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -144,26 +177,30 @@
 
               <ul class="cat_menu">
                 <li class="hassubs">
-                  <a href="#">Sim theo hãng<i class="fas fa-chevron-right"></i></a>
+                  <a href="#"
+                    >Sim theo hãng<i class="fas fa-chevron-right"></i
+                  ></a>
                   <ul>
-                    {% for cate in categories %}
-                     <li>
-                        <a href="/shop/{{cate.slug}}"
-                          >{{cate.name}}<i class="fas fa-chevron-right"></i
-                        ></a>
-                      </li>     
+                    {% for net in networks %}
+                    <li>
+                      <a href="/nha-mang/{{net.slug}}"
+                        >{{net.name}}<i class="fas fa-chevron-right"></i
+                      ></a>
+                    </li>
                     {% endfor %}
                   </ul>
                 </li>
                 <li class="hassubs">
-                  <a href="#">Sim phong thủy<i class="fas fa-chevron-right"></i></a>
+                  <a href="#"
+                    >Sim theo loại<i class="fas fa-chevron-right"></i
+                  ></a>
                   <ul>
                     {% for tag in tags %}
-                     <li>
-                        <a href="/shop/loai-sim/{{tag.id}}"
-                          >Sim {{tag.name}}<i class="fas fa-chevron-right"></i
-                        ></a>
-                      </li>     
+                    <li>
+                      <a href="/sim-so-dep/{{tag.slug}}"
+                        >Sim {{tag.name}}<i class="fas fa-chevron-right"></i
+                      ></a>
+                    </li>
                     {% endfor %}
                   </ul>
                 </li>
@@ -180,7 +217,8 @@
                 <li class="hassubs">
                   <a href="#">Bài viết<i class="fas fa-chevron-down"></i></a>
                   <ul>
-                    {% comment %} <li>
+                    {% comment %}
+                    <li>
                       <a href="#"
                         >Menu Item<i class="fas fa-chevron-down"></i
                       ></a>
@@ -201,13 +239,12 @@
                           ></a>
                         </li>
                       </ul>
-                    </li> {% endcomment %}
+                    </li>
+                    {% endcomment %}
                   </ul>
                 </li>
                 <li>
-                  <a href="blog.html"
-                    >Liên hệ<i class="fas fa-chevron-down"></i
-                  ></a>
+                  <a href="#">Liên hệ<i class="fas fa-chevron-down"></i></a>
                 </li>
               </ul>
             </div>
@@ -217,9 +254,10 @@
             <div class="menu_trigger_container ml-auto">
               <div
                 class="menu_trigger d-flex flex-row align-items-center justify-content-end"
+                id="left-menu"
               >
                 <div class="menu_burger">
-                  <div class="menu_trigger_text">menu</div>
+                  <div class="menu_trigger_text">MENU</div>
                   <div class="cat_burger menu_burger_inner">
                     <span></span><span></span><span></span>
                   </div>
@@ -238,8 +276,8 @@
     <div class="container">
       <div class="row">
         <div class="col">
-          <div class="page_menu_content">
-            <div class="page_menu_search">
+          <div class="page_menu_content" id="page_menu_content">
+            <div class="page_menu_search" style="display: block; margin: 15px 0px 0px 0px" >
               <form action="#">
                 <input
                   type="search"

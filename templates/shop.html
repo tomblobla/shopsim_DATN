@@ -33,15 +33,15 @@
 						<div class="sidebar_title">Loại sim</div>
 						<ul class="sidebar_categories">
 							{% for tag in tags %}
-							<li><a class="brand" href="/shop/loai-sim/{{tag.id}}">Sim {{tag.name}} ({{tag.products|length}})</a></li>
+							<li><a class="brand" href="/sim-so-dep/{{tag.slug}}">Sim {{tag.name}} ({{tag.sims|length}})</a></li>
 							{% endfor %}
 						</ul>
 					</div>
 					<div class="sidebar_section">
 						<div class="sidebar_subtitle">Nhà mạng</div>
 						<ul class="brands_list">
-							{% for cate in categories %}
-							<li><a href="/shop/{{cate.slug}}">{{cate.name}} ({{cate.products|length}})</a></li>
+							{% for net in networks %}
+							<li><a href="/nha-mang/{{net.slug}}">{{net.name}} ({{net.sims|length}})</a></li>
 							{% endfor %}
 						</ul>
 					</div>
@@ -55,7 +55,7 @@
 
 				<div class="shop_content">
 					<div class="shop_bar clearfix">
-						<div class="shop_product_count"><span>{{products|length}}</span> sim</div>
+						{% comment %} <div class="shop_product_count"><span>{{products|length}}</span> sim</div> {% endcomment %}
 						<div class="shop_sorting">
 							<span>Sắp xếp: </span>
 							<ul>
@@ -87,8 +87,8 @@
 								<li class="product_mark product_new">new</li>
 							</ul>
 						</div> {% endcomment %}
-						{% for prod in products %}
-						<!-- Char. Item -->
+						
+						{% comment %} {% for prod in products %}
 							<div class="col-md-6 char_col mb-3">
 								<div
 								class="char_item d-flex flex-row align-items-center justify-content-start"
@@ -123,7 +123,7 @@
 						</div>
 						{% endfor %}
 
-					</div>
+					</div> {% endcomment %}
 
 					<!-- Shop Page Navigation -->
 

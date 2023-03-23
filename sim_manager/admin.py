@@ -5,14 +5,28 @@ from jet.admin import CompactInline
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 # Register your models here.
    
+
+class TagInline(admin.TabularInline):
+    model = SIM.tags.through
+    extra = 1
+    
 class SIMInlineForNetwork(CompactInline):
     model = SIM
     extra = 1
     show_change_link = True    
-    fields = ('phone_number', 'price', 'discount', 'is_available', 'tags')
+    fields = ('phone_number', 'slug', 'price', 'discount', 'tags')
+    prepopulated_fields = {
+        'slug': ('phone_number',)
+    }
     
-from django.contrib.admin.widgets import ForeignKeyRawIdWidget
+    inlines = [TagInline]
+    classes = ['collapse']
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == 'tags':
+            kwargs['queryset'] = Tag.objects.all()
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+    
 class SIMInlineForTag(admin.TabularInline):
     model = SIM.tags.through
     extra = 1
@@ -39,7 +53,7 @@ class SIMAdmin(admin.ModelAdmin):
         'get_tags',
         'get_discount',
         'created_date',
-        'is_available'
+        'is_available',
     )
     
 
@@ -50,7 +64,7 @@ class SIMAdmin(admin.ModelAdmin):
     }
     
     def get_tags(self, obj):
-        return "\n".join([t.name for t in obj.tags.all()])
+        return ", ".join([t.name for t in obj.tags.all()])
     
     def get_discount(self, obj):
         return str(obj.discount) + '%'
@@ -59,27 +73,41 @@ class SIMAdmin(admin.ModelAdmin):
     get_discount.short_description = 'Giảm'
     
     def get_search_results(self, request, queryset, search_term):
-        try:
-            # Split the search term into two numbers
+        search_term = search_term.replace(' ', '')
+        if '-' in search_term:
             start_number, end_number = search_term.split('-')
-
-            # Filter the queryset based on the search criteria
+            if ',' in start_number:
+                start_number = start_number.split(',')
+            else:
+                start_number = [start_number]
+                
+            if ',' in end_number:
+                end_number = end_number.split(',')
+            else:
+                end_number = [end_number]
+            query = Q()
+            for start_item in start_number:
+                for end_item in end_number:
+                    query |= Q(slug__startswith=start_item, slug__endswith=end_item)
+               
+            queryset = queryset.filter(query)
+        elif ',' in search_term:
+            li = search_term.split(',')
+            query = Q()
+            for item in li:
+                query |= Q(slug__contains=item)
+                queryset = queryset.filter(query)
+        else:
             queryset = queryset.filter(
-                phone_number__startswith=start_number,
-                phone_number__endswith=end_number,
+                slug__contains=search_term,
             )
+        return queryset, True
 
-            # Return the filtered queryset and a boolean indicating if the search term was found
-            return queryset, True
-        except ValueError:
-            # Return an empty queryset if the search term is not in the correct format
-            return queryset, False
-
-    search_fields = ['phone_number']
+    search_fields = ['slug']
 
 class TagAdmin(admin.ModelAdmin):
     list_display = (
-        'name',
+        'name', 'sim_count'
     )
     
     prepopulated_fields = {
