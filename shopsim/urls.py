@@ -27,4 +27,10 @@ urlpatterns = [
     path('cua-hang/', views.shop, name='cua-hang'),
     path('trang-chu/', views.home, name='trang-chu'),
     path('', views.home, name='home'),
+    path('sim/<slug:slug_sim>', views.sim, name='sim'),
+    path('nha-mang/<slug:slug_network>', views.network, name='network'),
+    path('sim-so-dep/<slug:slug_tag>', views.tag, name='tag'),
+    path('load-more-sim/', views.SIMListView.as_view(), name='load-more-sim'),
+    path('filter-sim/', views.SIMFilterListView.as_view(), name='filter-sim'),
+    path('tai-khoan/', include('customer.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

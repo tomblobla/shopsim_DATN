@@ -20,11 +20,11 @@ class SIMSerializer(ModelSerializer):
     class Meta:
         model = SIM
         fields = ["id", "phone_number", "description", "image",
-                  "price", 'get_saleprice', "discount", "tags", 'slug',
+                  "price", 'get_salepricestr', "discount", "tags", 'slug', "get_curr_price",
                   "network_name", "network_id", "network_image_logo", "network_image_simcard", "network_slug"]
 
 
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
-        fields = ["id", "name", 'sims']
+        fields = ["id", "name", 'sims', 'slug']

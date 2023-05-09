@@ -1,148 +1,160 @@
 <!-- extends -->
-{% extends "shopbase.html" %}
+{% extends "base_page.html" %}
 <!-- load -->
 {% load static %}
 <!-- load -->
 {% load humanize %}
 <!-- Banner -->
 {% block content %}
-<style>
-
-</style>
-
-<!-- Home -->
-
-<div class="home">
-	<div class="home_background parallax-window" data-parallax="scroll" data-image-src="{% static 'images/shop_background.jpg' %}"></div>
-	<div class="home_overlay"></div>
-	<div class="home_content d-flex flex-column align-items-center justify-content-center">
-		<h2 class="home_title">Chọn sim mà bạn mong muốn</h2>
-	</div>
-</div>
-
-<!-- Shop -->
-
-<div class="shop">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-3">
-
-				<!-- Shop Sidebar -->
-				<div class="shop_sidebar">
-					<div class="sidebar_section">
-						<div class="sidebar_title">Loại sim</div>
-						<ul class="sidebar_categories">
-							{% for tag in tags %}
-							<li><a class="brand" href="/sim-so-dep/{{tag.slug}}">Sim {{tag.name}} ({{tag.sims|length}})</a></li>
-							{% endfor %}
-						</ul>
-					</div>
-					<div class="sidebar_section">
-						<div class="sidebar_subtitle">Nhà mạng</div>
-						<ul class="brands_list">
-							{% for net in networks %}
-							<li><a href="/nha-mang/{{net.slug}}">{{net.name}} ({{net.sims|length}})</a></li>
-							{% endfor %}
-						</ul>
-					</div>
-				</div>
-
-			</div>
-
-			<div class="col-lg-9">
-				
-				<!-- Shop Content -->
-
-				<div class="shop_content">
-					<div class="shop_bar clearfix">
-						{% comment %} <div class="shop_product_count"><span>{{products|length}}</span> sim</div> {% endcomment %}
-						<div class="shop_sorting">
-							<span>Sắp xếp: </span>
-							<ul>
-								<li>
-									<span class="sorting_text">Giá tăng dần<i class="fas fa-chevron-down"></span></i>
-									<ul>
-										<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "price_increasing" }'>Giá tăng dần</li>
-										<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "price_decreasing" }'>Giá giảm dần</li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-					</div>
-
-					<div class="product_grid row pt-3 pl-4">
-						<div class="product_grid_border"></div>
-
-						<!-- Product Item -->
-						{% comment %} <div class="product_item is_new">
-							<div class="product_border"></div>
-							<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="images/new_5.jpg" alt=""></div>
-							<div class="product_content">
-								<div class="product_price">$225</div>
-								<div class="product_name"><div><a href="#" tabindex="0">Philips BT6900A</a></div></div>
-							</div>
-							<div class="product_fav"><i class="fas fa-heart"></i></div>
-							<ul class="product_marks">
-								<li class="product_mark product_discount">-25%</li>
-								<li class="product_mark product_new">new</li>
-							</ul>
-						</div> {% endcomment %}
-						
-						{% comment %} {% for prod in products %}
-							<div class="col-md-6 char_col mb-3">
-								<div
-								class="char_item d-flex flex-row align-items-center justify-content-start"
-								>
-								<div class="char_icon">
-									<img src="{{ prod.category_image }}" alt="" />
-								</div>
-								<div class="char_content">
-									<div class="char_title"><a href="/shop/{{prod.category_slug}}/{{ prod.slug }}">{{ prod.name }}</a></div>
-									<div class="char_subtitle">
-										{{ prod.get_saleprice|floatformat:0|intcomma:False }} VNĐ
-										{% if prod.sale_off > 0 %}
-										<small class="text-danger">(-{{ prod.sale_off }}%)</small>
-										{% endif %}
-									</div>
-								</div>
-								<div
-									style="
-									position: absolute;
-									right: 25px;
-									top: 23px;
-									height: 50px;
-									margin: auto;
-									"
-									class="button banner_button my-0"
-								>
-									<a href="#" class="valign" style="padding: 0 20px">
-									<i class="fas fa-shopping-cart"></i>
-									</a>
-								</div>
-							</div>
-						</div>
-						{% endfor %}
-
-					</div> {% endcomment %}
-
-					<!-- Shop Page Navigation -->
-
-					<div class="shop_page_nav d-flex flex-row">
-						<div class="page_prev d-flex flex-column align-items-center justify-content-center"><i class="fas fa-chevron-left"></i></div>
-						<ul class="page_nav d-flex flex-row">
-							<li><a href="#">1</a></li>
-							<li><a href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">...</a></li>
-							<li><a href="#">21</a></li>
-						</ul>
-						<div class="page_next d-flex flex-column align-items-center justify-content-center"><i class="fas fa-chevron-right"></i></div>
-					</div>
-
-				</div>
-
-			</div>
+<div class="shop_content">
+	<div class="shop_bar clearfix">
+		<div class="shop_product_count"><span id="simcount">{{sims|length}}</span> sim</div>
+		<div class="shop_sorting" style="float: right">
+			<span>Sắp xếp: </span>
+			<ul>
+				<li>
+					<span class="sorting_text"><span id="orderDisplay">Giá tăng dần</span><i class="fas fa-chevron-down"></span></i>
+					<ul>
+						<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "price_increasing" }' id="price_increasing">Giá tăng dần</li>
+						<li class="shop_sorting_button" data-isotope-option='{ "sortBy": "price_decreasing" }' id="price_decreasing">Giá giảm dần</li>
+					</ul>
+				</li>
+			</ul>
 		</div>
 	</div>
+
+	<div class="product_grid row pt-3 pl-4" id="sim-grid">
+		{% for sim in sims %}
+		<!-- Char. Item -->
+			<div class="col-md-6 char_col mb-3" data-price="{{ sim.get_curr_price }}">
+				<div
+				class="char_item d-flex flex-row align-items-center justify-content-start"
+				>
+				<div class="char_icon">
+					<img src="{{ sim.network_image_logo }}" alt="" />
+				</div>
+				<div class="char_content">
+					<div class="char_title font-font-weight-bold"><a class="font-weight-bold" href="{% url 'sim' slug_sim=sim.slug %}">{{ sim.phone_number }}</a></div>
+					<div class="char_subtitle">
+						{{ sim.get_salepricestr }} 
+						{% if sim.discount %}
+						<small class="text-danger">(-{{ sim.discount }}%)</small>
+						{% endif %}
+					</div>
+				</div>
+				<div
+					style="
+					position: absolute;
+					right: 25px;
+					top: 23px;
+					height: 50px;
+					margin: auto;
+					"
+					class="button banner_button my-0"
+				>
+					<a href="#" class="valign" style="font-size: 18px; padding: 0px 18px">
+					<i class="fas fa-shopping-cart" style="margin-top: 15px"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+
+	</div>
+	<div class="spinner-container text-center pb-2 d-none" id="spinner-box">
+		<div class="spinner-grow spinner-grow-1 text-primary" role="status" style="width: 1rem; height: 1rem;"></div>
+		<span class="sr-only">Loading...</span>
+		</div>
+		</div>
+	</div>
+	<div id="loading-box" class="container text-center">
+		<button class="btn btn-outline-primary" id="load-btn">Hiển thị thêm</button>
+	</div>
 </div>
+<script>
+    const simList = document.getElementById("sim-grid");
+    const spinnerBox = document.getElementById("spinner-box");
+    const loadBtn = document.getElementById("load-btn");
+	const form = document.getElementById("filterForm");
+	const btnFindSIM = document.getElementById("btnFindSIM");
+	const page_number = document.getElementById("page_number");
+	const simcount = document.getElementById("simcount");
+
+   function handleGetData(orderStateChange) {
+		$.ajax({
+			type: "post",
+			url: "/filter-sim/",
+			data: $('#filterForm').serializeArray(),
+			success: function (response) {
+			if (response.data === null) { return; }
+			simcount.innerHTML = simList.children.length;
+			const data = response.data;
+			spinnerBox.classList.remove("d-none");
+			if (parseInt(page_number.value) < 2 || orderStateChange==true) {
+				simList.innerHTML = '';
+			}
+			setTimeout(() => {
+				spinnerBox.classList.add("d-none");
+				data.map(sim=>{
+					innerHTML = `
+							<div class="col-md-6 char_col mb-3" data-price="${ sim.get_curr_price }">
+							<div class="char_item d-flex flex-row align-items-center justify-content-start">
+							<div class="char_icon">
+								<img src="${sim.network_image_logo}" alt="${sim.slug}" />
+							</div>
+							<div class="char_content">
+								<div class="char_title font-font-weight-bold">
+								<a class="font-weight-bold" href="/sim/${sim.slug}">${sim.phone_number}</a>
+								</div>
+								<div class="char_subtitle">
+								${ sim.get_salepricestr }`
+					if (sim.discount > 0) {
+						innerHTML += 
+						` 
+								<small class="text-danger">(-${ sim.discount }%)</small>
+						`
+					}
+					innerHTML += `
+								</div>
+							</div>
+							<div style="position: absolute; right: 25px; top: 23px; height: 50px; margin: auto;" class="button banner_button my-0">
+								<a href="/sim/${sim.slug}" class="valign" style="font-size: 18px; padding: 0px 18px">
+								<i class="fas fa-shopping-cart" style="margin-top: 15px"></i>
+								</a>
+							</div>
+							</div>
+						</div>`;
+					simList.innerHTML += innerHTML;
+					});
+			}, 500);
+			},
+			error: function (error) {
+			console.log(error);
+			},
+		});
+    };
+
+	function loadMore() {
+		page_number.value = parseInt(page_number.value) + 1;
+		handleGetData(false);
+	}
+
+	form.addEventListener("change", () => {
+		findSIM();
+    });
+
+    loadBtn.addEventListener("click", () => {
+		loadMore();
+    });
+
+	btnFindSIM.addEventListener("click", () => {
+		findSIM();
+    });
+
+	function findSIM() {
+		page_number.value = 1;
+		handleGetData(true);
+	}
+
+  </script>
 {% endblock content %}

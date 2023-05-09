@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'sim_manager',
+    'customer',
     'django.contrib.humanize',
 ]
 
@@ -77,6 +78,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'shopsim.wsgi.application'
 
+AUTH_USER_MODEL = "customer.Customer"
+
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -87,6 +90,9 @@ DATABASES = {
         'NAME': 'shopsim',
         'USER': 'root',
         'PASSWORD': '',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_TRANS_TABLES',
+        },
     }
 }
 
@@ -145,3 +151,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#EMAIL CONFIG
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'hotrongvinh2001@gmail.com'
+EMAIL_HOST_PASSWORD = 'gtchqbbphcboifws'
+
+DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'

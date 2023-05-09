@@ -376,7 +376,7 @@ section {
 }
 
 .top_bar_contact_item {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	line-height: 56px;
 	margin-right: 40px;
@@ -387,7 +387,7 @@ section {
 }
 
 .top_bar_contact_item a {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	line-height: 56px;
 	color: #000;
@@ -440,7 +440,7 @@ section {
 	display: block;
 	width: 100%;
 	border-bottom: solid 1px #f2f2f2;
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .standard_dropdown li:last-child a {
@@ -455,7 +455,7 @@ section {
 .standard_dropdown li a {
 	display: block;
 	position: relative;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	color: #000000;
 	line-height: 56px;
@@ -555,7 +555,7 @@ section {
 }
 
 .top_bar_user a {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	line-height: 56px;
 	color: #000;
@@ -649,7 +649,7 @@ section {
 }
 
 .header_search_input::-webkit-input-placeholder {
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
@@ -659,7 +659,7 @@ section {
 
 /* older Firefox*/
 	{
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
@@ -669,21 +669,21 @@ section {
 
 /* Firefox 19+ */
 	{
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
 }
 
 .header_search_input:-ms-input-placeholder {
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
 }
 
 .header_search_input::input-placeholder {
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
@@ -726,7 +726,7 @@ section {
 
 .custom_dropdown_placeholder {
 	display: inline-block;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	color: #a3a3a3;
 	line-height: 48px;
@@ -1029,7 +1029,7 @@ select option {
 .cat_menu li a {
 	display: block;
 	position: relative;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	color: #000000;
 	line-height: 46px;
@@ -1486,7 +1486,7 @@ select option {
 }
 
 .product_price {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 500;
 	margin-top: 25px;
 }
@@ -1723,20 +1723,20 @@ select option {
 	transform: translateX(-37px);
 }
 
-.sidebar_title {
+.label_title {
 	font-size: 18px;
-	font-weight: 500;
+	font-weight: bold;
 }
 
-.sidebar_categories {
-	margin-top: 37px;
+.label_subitem {
+	margin-top: 10px;
 }
 
-.sidebar_categories li {
+.label_subitem li {
 	margin-bottom: 7px;
 }
 
-.sidebar_categories li a {
+.label_subitem li a {
 	color: rgba(0, 0, 0, 0.5);
 	-webkit-transition: all 200ms ease;
 	-moz-transition: all 200ms ease;
@@ -1745,7 +1745,7 @@ select option {
 	transition: all 200ms ease;
 }
 
-.sidebar_categories li a:hover {
+.label_subitem li a:hover {
 	color: #0e8ce4;
 }
 
@@ -1908,7 +1908,7 @@ select option {
 }
 
 .viewed_price {
-	font-size: 16px;
+	font-size: 14px;
 	color: #000000;
 	font-weight: 500;
 }
@@ -2114,7 +2114,7 @@ select option {
 	border: solid 1px #e5e5e5;
 	border-radius: 5px;
 	padding-left: 25px;
-	font-size: 16px;
+	font-size: 14px;
 	outline: none;
 	color: #0e8ce4;
 }
@@ -2125,27 +2125,27 @@ select option {
 }
 
 .newsletter_input::-webkit-input-placeholder {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0, 0, 0, 0.3);
 }
 
 .newsletter_input:-moz-placeholder {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0, 0, 0, 0.3);
 }
 
 .newsletter_input::-moz-placeholder {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0, 0, 0, 0.3);
 }
 
 .newsletter_input:-ms-input-placeholder {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0, 0, 0, 0.3);
 }
 
 .newsletter_input::input-placeholder {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0, 0, 0, 0.3);
 }
 

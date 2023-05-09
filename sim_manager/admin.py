@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Network, SIM, Tag
 from django.db.models import Q
 from jet.admin import CompactInline
-from django.contrib.admin.widgets import ForeignKeyRawIdWidget
+
 # Register your models here.
    
 
@@ -35,33 +35,43 @@ class SIMInlineForTag(admin.TabularInline):
     verbose_name_plural = 'Danh sách SIM'
     
 class NetworkAdmin(admin.ModelAdmin):  # new
-    readonly_fields = ['logo_preview', 'simcard_img_preview']
+    readonly_fields = ['logo_preview', 'simcard_img_preview', 'goto_net']
     prepopulated_fields = {
         'slug': ('name',)
     }
 
-    list_display = ('name', 'logo_preview', 'sim_count')
+    list_display = ('name', 'logo_preview', 'sim_count',
+        'goto_net',)
     
     inlines = (SIMInlineForNetwork,)
     
 class SIMAdmin(admin.ModelAdmin):
     list_display = (
         'phone_number',
-        'get_originalprice',
-        'get_saleprice',
+        'get_originalpricestr',
+        'get_salepricestr',
         'network',
         'get_tags',
         'get_discount',
         'created_date',
         'is_available',
+        'goto_sim',
     )
     
 
-    list_filter = ['network__name', 'tags__name', 'discount']
+    # list_filter = ['network__name', 'tags__name', 'discount']
 
+
+    readonly_fields = ['sim_img_preview', 'goto_sim']
+    
+    
     prepopulated_fields = {
         'slug': ('phone_number', )
     }
+    
+    def get_list_filter(self, request):
+        # return the built-in filter for the 'my_field' field
+        return ['network__name', 'tags__name', 'discount']
     
     def get_tags(self, obj):
         return ", ".join([t.name for t in obj.tags.all()])
@@ -107,8 +117,11 @@ class SIMAdmin(admin.ModelAdmin):
 
 class TagAdmin(admin.ModelAdmin):
     list_display = (
-        'name', 'sim_count'
+        'name', 'sim_count',
+        'goto_tag',
     )
+
+    readonly_fields = ['goto_tag']
     
     prepopulated_fields = {
         'slug': ('name',)

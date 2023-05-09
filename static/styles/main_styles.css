@@ -127,7 +127,9 @@ h1{font-size: 48px;}
 h2{font-size: 36px;}
 h3{font-size: 24px;}
 h4{font-size: 18px;}
-h5{font-size: 14px;}
+h5 {
+	font-size: 14px;
+}
 h1, h2, h3, h4, h5, h6
 {
 	font-family: sans-serif;
@@ -293,7 +295,7 @@ section
 }
 .top_bar_contact_item
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	line-height: 56px;
 	margin-right: 40px;
@@ -304,7 +306,7 @@ section
 }
 .top_bar_contact_item a
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	line-height: 56px;
 	color: #000;
@@ -358,7 +360,7 @@ section
 	display: block;
 	width: 100%;
 	border-bottom: solid 1px #f2f2f2;
-	font-size: 16px;
+	font-size: 14px;
 }
 .standard_dropdown li:last-child a
 {
@@ -373,7 +375,7 @@ section
 {
 	display: block;
 	position: relative;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	color: #000000;
 	line-height: 56px;
@@ -473,7 +475,7 @@ section
 }
 .top_bar_user a
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	line-height: 56px;
 	color: #000;
@@ -568,35 +570,35 @@ section
 }
 .header_search_input::-webkit-input-placeholder
 {
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
 }
 .header_search_input:-moz-placeholder /* older Firefox*/
 {
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
 }
 .header_search_input::-moz-placeholder /* Firefox 19+ */ 
 {
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
 } 
 .header_search_input:-ms-input-placeholder
 { 
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
 }
 .header_search_input::input-placeholder
 {
-	font-size: 16px !important;
+	font-size: 14px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #a3a3a3 !important;
@@ -639,7 +641,7 @@ section
 .custom_dropdown_placeholder
 {
 	display: inline-block;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	color: #a3a3a3;
 	line-height: 48px;
@@ -945,7 +947,7 @@ select option
 {
 	display: block;
 	position: relative;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	color: #000000;
 	line-height: 46px;
@@ -1677,7 +1679,7 @@ select option
 }
 .product_price
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 500;
 	margin-top: 25px;
 }
@@ -2133,7 +2135,7 @@ select option
 }
 .banner_2_text
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	color: #828282;
 	line-height: 1.5;
@@ -2400,7 +2402,7 @@ select option
 }
 .arrivals_single_name a
 {
-	font-size: 16px;
+	font-size: 14px;
 	color: #000000;
 	-webkit-transition: all 200ms ease;
 	-moz-transition: all 200ms ease;
@@ -2414,7 +2416,7 @@ select option
 }
 .arrivals_single_price
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 500;
 	float: right;
 }
@@ -2586,7 +2588,7 @@ select option
 }
 .bestsellers_name a
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 400;
 	color: #000000;
 	-webkit-transition: all 200ms ease;
@@ -2610,7 +2612,7 @@ select option
 }
 .bestsellers_price
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 500;
 	margin-top: 10px;
 }
@@ -2916,7 +2918,7 @@ select option
 }
 .trends_name a
 {
-	font-size: 16px;
+	font-size: 14px;
 	color: #000000;
 }
 .trends_name a:hover
@@ -2925,7 +2927,7 @@ select option
 }
 .trends_price
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 500;
 	float: right;
 }
@@ -3083,7 +3085,7 @@ select option
 }
 .review_name
 {
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 500;
 }
 .review_rating_container
@@ -3226,7 +3228,7 @@ select option
 }
 .viewed_price
 {
-	font-size: 16px;
+	font-size: 14px;
 	color: #000000;
 	font-weight: 500;
 }
@@ -3434,7 +3436,7 @@ select option
 	border: solid 1px #e5e5e5;
 	border-radius: 5px;
 	padding-left: 25px;
-	font-size: 16px;
+	font-size: 14px;
 	outline: none;
 	color: #0e8ce4;
 }
@@ -3445,27 +3447,27 @@ select option
 }
 .newsletter_input::-webkit-input-placeholder
 {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0,0,0,0.3);
 }
 .newsletter_input:-moz-placeholder
 {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0,0,0,0.3);
 }
 .newsletter_input::-moz-placeholder
 {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0,0,0,0.3);
 } 
 .newsletter_input:-ms-input-placeholder
 { 
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0,0,0,0.3);
 }
 .newsletter_input::input-placeholder
 {
-	font-size: 16px;
+	font-size: 14px;
 	color: rgba(0,0,0,0.3);
 }
 .newsletter_button

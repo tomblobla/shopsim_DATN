@@ -1,0 +1,237 @@
+<!-- extends -->
+{% extends "detailprod_base.html" %}
+<!-- load -->
+{% load static %}
+<!-- load -->
+{% load humanize %}
+<!-- Banner -->
+{% block content %}
+
+<!-- Home -->
+
+<div class="row pt-0 px-3">
+  <!-- Selected Image -->
+  <div class="col-lg-6 px-0">
+    <div class="">
+      <img
+        style="width: 100%; height: auto"
+        src="
+						{% if sim.image %}
+						{{sim.image.url}}
+					{% else %}
+						{{sim.network.image_simcard.url}}
+					{% endif %}
+					"
+        alt="{{sim.phone_number}}"
+      />
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div class="col-lg-6">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Thuộc tính</th>
+          <th scope="col">Thông số</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Số thuê bao:</th>
+          <td>{{sim.phone_number}}</td>
+        </tr>
+        <tr>
+          <th scope="row">Nhà mạng:</th>
+          <td>
+            <a href="{% url 'network' slug_network=sim.network.slug %}"
+              >{{sim.network.name}}</a
+            >
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">Kiểu số đẹp:</th>
+          <td>
+            {% for t in sim.tags.all %}
+            <a
+              class="badge badge-pill badge-primary p-2"
+              href="{% url 'tag' slug_tag=t.slug %}"
+              >{{t.name}}</a
+            >
+            {% endfor %}
+          </td>
+        </tr>
+        {% if sim.description %}
+        <th scope="row">Mô tả:</th>
+        <td>{{sim.description}}</td>
+        <p></p>
+        {% endif %} {% if sim.discount %}
+        <tr>
+          <th scope="row">Giá gốc:</th>
+          <td style="text-decoration: line-through">
+            {{sim.get_originalpricestr}}
+          </td>
+        </tr>
+        {% endif %}
+        <tr>
+          <th scope="row">Giá bán:</th>
+          <td>{{sim.get_salepricestr}}</td>
+        </tr>
+      </tbody>
+    </table>
+    {% comment %}
+    <div class="order_info d-flex flex-row">
+      <form action="/shop/order/" method="post">
+        {% csrf_token %}
+        <div class="product_price">{{ sim.get_salepricestr}}</div>
+        <div class="button_container">
+          <input type="hidden" name="hiddenID" value="{{sim.id}}" />
+          <input
+            type="text"
+            name="address"
+            class="form-control mb-3"
+            placeholder="Địa chỉ nhà"
+          />
+          <button type="submit" class="button cart_button">Đặt</button>
+        </div>
+      </form>
+    </div>
+    {% endcomment %}
+  </div>
+</div>
+<div class="shop_content">
+  <div class="pl-2 font-weight-bold pt-3" style="font-size: 18px">
+    Một số SIM khác cùng nhà mạng
+  </div>
+  <div class="product_grid row pt-3 pl-4" id="sim-grid">
+    <!-- Product Item -->
+    {% comment %}
+    <div class="product_item is_new">
+      <div class="product_border"></div>
+      <div
+        class="product_image d-flex flex-column align-items-center justify-content-center"
+      >
+        <img src="images/new_5.jpg" alt="" />
+      </div>
+      <div class="product_content">
+        <div class="product_price">$225</div>
+        <div class="product_name">
+          <div><a href="#" tabindex="0">Philips BT6900A</a></div>
+        </div>
+      </div>
+      <div class="product_fav"><i class="fas fa-heart"></i></div>
+      <ul class="product_marks">
+        <li class="product_mark product_discount">-25%</li>
+        <li class="product_mark product_new">new</li>
+      </ul>
+    </div>
+    {% endcomment %} {% for sim in othersims_samenetwork %}
+    <!-- Char. Item -->
+    <div class="col-md-6 char_col mb-3">
+      <div
+        class="char_item d-flex flex-row align-items-center justify-content-start"
+      >
+        <div class="char_icon">
+          <img src="{{ sim.network_image_logo }}" alt="" />
+        </div>
+        <div class="char_content">
+          <div class="char_title font-font-weight-bold">
+            <a class="font-weight-bold" href="{% url 'sim' slug_sim=sim.slug %}"
+              >{{ sim.phone_number }}</a
+            >
+          </div>
+          <div class="char_subtitle">
+            {{ sim.get_salepricestr }} {% if sim.discount %}
+            <small class="text-danger">(-{{ sim.discount }}%)</small>
+            {% endif %}
+          </div>
+        </div>
+        <div
+          style="
+            position: absolute;
+            right: 25px;
+            top: 23px;
+            height: 50px;
+            margin: auto;
+          "
+          class="button banner_button my-0"
+        >
+          <a href="#" class="valign" style="font-size: 18px; padding: 0px 18px">
+            <i class="fas fa-shopping-cart" style="margin-top: 15px"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="spinner-container text-center pb-2 d-none" id="spinner-box">
+    <div class="spinner-grow spinner-grow-1 text-primary" role="status" style="width: 1rem; height: 1rem;"></div>
+      <span class="sr-only">Loading...</span>
+    </div>
+    </div>
+  </div>
+  <div id="loading-box" class="container text-center">
+    <button class="btn btn-outline-primary" id="load-btn">Hiển thị thêm</button>
+  </div>
+  <script>
+    const simList = document.getElementById("sim-grid");
+    const spinnerBox = document.getElementById("spinner-box");
+    const loadBtn = document.getElementById("load-btn");
+    let page = 1;
+    const handleGetData = () => {
+      $.ajax({
+        type: "post",
+        url: "/load-more-sim/",
+        data: {page_number: page, csrfmiddlewaretoken: "{{ csrf_token }}", sim_slug: "{{sim.slug}}" },
+        success: function (response) {
+          if (response.data === null) { return; }
+          const data = response.data;
+          spinnerBox.classList.remove("d-none");
+          setTimeout(() => {
+            spinnerBox.classList.add("d-none");
+            data.map(sim=>{
+              innerHTML = `
+                <div class="col-md-6 char_col mb-3" data-price="${ sim.get_curr_price }">
+                <div class="char_item d-flex flex-row align-items-center justify-content-start">
+                <div class="char_icon">
+                  <img src="${sim.network_image_logo}" alt="${sim.slug}" />
+                </div>
+                <div class="char_content">
+                  <div class="char_title font-font-weight-bold">
+                  <a class="font-weight-bold" href="/sim/${sim.slug}">${sim.phone_number}</a>
+                  </div>
+                  <div class="char_subtitle">
+                  ${ sim.get_salepricestr }`
+            if (sim.discount > 0) {
+              innerHTML += 
+              ` 
+                  <small class="text-danger">(-${ sim.discount }%)</small>
+              `
+            }
+            innerHTML += `
+                  </div>
+                </div>
+                <div style="position: absolute; right: 25px; top: 23px; height: 50px; margin: auto;" class="button banner_button my-0">
+                  <a href="/sim/${sim.slug}" class="valign" style="font-size: 18px; padding: 0px 18px">
+                  <i class="fas fa-shopping-cart" style="margin-top: 15px"></i>
+                  </a>
+                </div>
+                </div>
+              </div>`;
+            simList.innerHTML += innerHTML;
+          });
+          }, 500);
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
+    };
+
+    loadBtn.addEventListener("click", () => {
+      page += 1;
+      handleGetData();
+    });
+  </script>
+</div>
+{% endblock content %}

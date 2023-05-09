@@ -1,0 +1,79 @@
+{% extends "account_base.html" %}
+<!-- load -->
+{% load static %}
+<!-- load -->
+{% load humanize %}
+<!-- Banner -->
+{% block content %}
+<div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+<div class="col-md-8 col-lg-6">
+    <div class="">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-lg-8 mx-auto">
+    <a href="/" class="mx-auto"
+            ><img
+              class="logo pb-4"
+              src="{% static './images/logo.png' %}"
+              style="max-height: 100px; position: relative; margin-left: -20px"
+          /></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="login d-flex align-items-center pb-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9 col-lg-8 mx-auto">
+          
+
+          <!-- Sign In Form -->
+            <div class="text-center">
+              <p><strong>{{message}}</strong></p>
+              {% if username %}
+              <p>Nếu vẫn không thấy tài khoản</p>
+              <a class="small" href="{% url 'resend-email-valid' username=username %}">Ấn vào đây để gửi lại link xác nhận email</a>
+              {% else %}
+              <p class="mt-3"><strong>Sẽ tự động chuyển đến trang chủ trong <div id="countdown">5<div> giây</strong></p>
+              {% endif %}
+              <p>Nếu đã có tài khoản</p>
+              <a class="small" href="#">Đăng nhập</a>
+              <p class="mt-3">Nếu quên mật khẩu hãy ấn vào đây</p>
+              <a class="small" href="#">Quên mật khẩu?</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% if not username %}
+    <script type="text/javascript">
+		// Thời gian bắt đầu đếm ngược
+		var count = 5;
+
+		// Lấy đối tượng div chứa đếm ngược
+		var countdownEl = document.getElementById("countdown");
+
+		// Định nghĩa hàm đếm ngược
+		function countdown() {
+			if (count == 0) {
+				// Chuyển hướng trang sau khi đếm ngược xong
+				window.location.href = "/";
+			} else {
+				// Hiển thị giá trị đếm ngược trong đối tượng div
+				countdownEl.innerHTML = count;
+
+				// Giảm giá trị đếm ngược mỗi giây
+				count--;
+
+				// Đợi 1 giây trước khi tiếp tục đếm ngược
+				setTimeout(countdown, 1000);
+			}
+		}
+
+		// Bắt đầu đếm ngược khi trang được tải
+		countdown();
+	</script>
+{% endif %}
+{% endblock content %}
