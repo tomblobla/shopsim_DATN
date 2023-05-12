@@ -1,16 +1,31 @@
+from datetime import datetime
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, authenticate
-from .forms import SignupForm, LoginForm
+
+from customer.serializers import CartItemSerializer
+from .forms import SignupForm, LoginForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm, UpdateCustomerForm, ChangePasswordForm
+from django.contrib.auth.decorators import login_required
 from .models import Customer
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth import update_session_auth_hash
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
+from sim_manager.models import SIM, Tag, Network
+from sim_manager.serializers import SIMSerializer, TagSerializer, NetworkSerializer
+from .models import Customer, CartItem
+
+from django.contrib.auth.views import (
+    PasswordResetView, 
+    PasswordResetDoneView, 
+    PasswordResetConfirmView,
+    PasswordResetCompleteView
+)
 
 def signup(request):
     if request.user.is_authenticated:
@@ -75,7 +90,7 @@ def resend_valid_mail(request, username):
                 mail_subject, message, to=[to_email]
     )
     email.send()
-    return render(request, 'redirect_page.html', {'message': 'Mail xác nhận đã được gửi, vui lòng truy cập vào hòm và ấn đường link xác nhận để có thể đăng nhập.', 'username': user.username})
+    return render(request, 'redirect_page.html', {'message': 'Mail xác nhận đã được gửi, vui lòng truy cập vào hòm và ấn đường link xác nhận để có thể đăng nhập.', 'username': user.username, 'title': 'Xác nhận tài khoản'})
 
 
 def logout_view(request):
@@ -101,8 +116,155 @@ def login_view(request):
                 return redirect('/')
             else:
                 form.add_error(None, 'Tài khoản hoặc mật khẩu không chính xác.')
-        else: 
-            form.add_error(None, 'Tài khoản hoặc mật khẩu không hợp lệ.')
     else:
         form = LoginForm(request)
     return render(request, 'signin.html', {'form': form, 'title': 'Đăng nhập'})
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'password_reset/password_reset.html'
+    form_class = CustomPasswordResetForm
+    email_template_name = 'password_reset/password_reset_email.html'
+    subject_template_name = 'password_reset/password_reset_subject.txt'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Lấy lại mật khẩu'
+        return context
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name='password_reset/password_reset_message.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Lấy lại mật khẩu'
+        context['message'] = 'Đã gửi link reset mật khẩu vào email.'
+        return context
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name='password_reset/password_reset_confirm.html'
+    form_class = CustomPasswordResetConfirmForm
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Cập nhật mật khẩu'
+        return context
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name='password_reset/password_reset_message.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Cập nhật mật khẩu'
+        context['message'] = 'Thay đổi mật khẩu thành công.'
+        return context
+    
+
+def customer_update(request):
+    customer = request.user
+    
+    if not customer.is_authenticated:
+        return redirect('/')
+    
+    if request.method == 'POST':
+        form = UpdateCustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    else:
+        form = UpdateCustomerForm(instance=customer)
+    return render(request, 'customer_update.html', {'form': form, 'title': 'Thay đổi mật khẩu'})
+
+
+def customer_update(request):
+    customer = request.user
+    
+    if not customer.is_authenticated:
+        return redirect('/')
+    
+    if request.method == 'POST':
+        form = UpdateCustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    else:
+        form = UpdateCustomerForm(instance=customer)
+    return render(request, 'customer_update.html', {'form': form, 'title': 'Thay đổi thông tin'})
+
+
+def change_password(request):
+    customer = request.user
+    
+    if not customer.is_authenticated:
+        return redirect('/')
+    
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.user, request.POST)
+
+        if form.is_valid():
+            customer = form.save()
+            update_session_auth_hash(request, customer)  # Important!
+            return redirect('/')
+
+    else:
+        form = ChangePasswordForm(customer)
+
+    return render(request, 'change_password.html', {'form': form, 'title': 'Thay đổi mật khẩu'})
+
+
+def cart(request):
+    if not request.user.is_authenticated:
+        return redirect('signin')
+    
+    tagSerializer = TagSerializer(
+        Tag.objects.all(), many=True)
+    
+    networkSerializer = NetworkSerializer(
+        Network.objects.all(), many=True)
+    
+    cart_items = CartItem.objects.all().filter(customer=request.user)
+    cart_itemSerializer = CartItemSerializer(cart_items, many=True)
+    
+    cart_count = cart_items.count()
+        
+    context = {
+        "tags": tagSerializer.data,
+        "networks": networkSerializer.data,
+        "cart_items": cart_itemSerializer.data,
+        "cart_count": cart_count,
+    }
+
+    return render(request, 'cart.html', context)
+
+
+def add_to_cart(request):
+    customer = request.user
+    
+    if not customer.is_authenticated:
+        return redirect('signin')
+    
+    sim_id = request.POST.get('hiddenID')
+    sim = get_object_or_404(SIM, pk=sim_id, is_visible=True)
+
+    # Check if the customer already has a cart item for this sim
+    cart_item = CartItem.objects.filter(sim=sim, customer=customer).first()
+
+    # If the customer already has a cart item for this sim, increment the quantity
+    if not cart_item:
+        # Otherwise, create a new cart item
+        cart_item = CartItem(sim=sim, customer=customer)
+        cart_item.save()
+
+    return redirect('cart')
+
+
+def remove_from_cart(request):
+    customer = request.user
+    
+    if not customer.is_authenticated:
+        return redirect('signin')
+    
+    cart_id = request.POST.get('hiddenID')
+    cart_item = CartItem.objects.get(id=cart_id)
+
+    # delete
+    cart_item.delete()
+
+    return redirect('cart')

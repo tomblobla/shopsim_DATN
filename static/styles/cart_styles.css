@@ -1238,7 +1238,7 @@ select option
 {
 	width: 100%;
 	padding: 15px;
-	padding-right: 46px;
+	padding-right: 15px;
 }
 .cart_item_image
 {
@@ -1299,7 +1299,7 @@ select option
 	margin-top: 30px;
 	border: solid 1px #e8e8e8;
 	box-shadow: 0px 1px 5px rgba(0,0,0,0.1);
-	padding-right: 46px;
+	padding-right: 15px;
 	padding-left: 15px;
 }
 .order_total_title

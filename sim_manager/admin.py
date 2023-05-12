@@ -73,14 +73,6 @@ class SIMAdmin(admin.ModelAdmin):
         # return the built-in filter for the 'my_field' field
         return ['network__name', 'tags__name', 'discount']
     
-    def get_tags(self, obj):
-        return ", ".join([t.name for t in obj.tags.all()])
-    
-    def get_discount(self, obj):
-        return str(obj.discount) + '%'
-    
-    get_tags.short_description = 'Loại SIM'
-    get_discount.short_description = 'Giảm'
     
     def get_search_results(self, request, queryset, search_term):
         search_term = search_term.replace(' ', '')

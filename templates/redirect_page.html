@@ -7,25 +7,17 @@
 {% block content %}
 <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
 <div class="col-md-8 col-lg-6">
-    <div class="">
+  <div class="login d-flex align-items-center pb-5">
     <div class="container">
       <div class="row">
         <div class="col-md-9 col-lg-8 mx-auto">
-    <a href="/" class="mx-auto"
+          <div class="text-center"><a href="/" class="text-center"
             ><img
               class="logo pb-4"
               src="{% static './images/logo.png' %}"
               style="max-height: 100px; position: relative; margin-left: -20px"
           /></a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="login d-flex align-items-center pb-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-9 col-lg-8 mx-auto">
-          
+          </div>
 
           <!-- Sign In Form -->
             <div class="text-center">
@@ -36,12 +28,11 @@
               {% else %}
               <p class="mt-3"><strong>Sẽ tự động chuyển đến trang chủ trong <div id="countdown">5<div> giây</strong></p>
               {% endif %}
-              <p>Nếu đã có tài khoản</p>
-              <a class="small" href="#">Đăng nhập</a>
-              <p class="mt-3">Nếu quên mật khẩu hãy ấn vào đây</p>
-              <a class="small" href="#">Quên mật khẩu?</a>
+              <p class="mt-3">Nếu đã có tài khoản</p>
+              <a class="small" href="{% url 'signin' %}">Đăng nhập</a>
+              <p class="mt-3">Nếu quên mật khẩu</p>
+              <a class="small" href="{% url 'password-reset'%}">Quên mật khẩu?</a>
             </div>
-          </form>
         </div>
       </div>
     </div>

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'sim_manager',
     'customer',
+    'order',
     'django.contrib.humanize',
 ]
 

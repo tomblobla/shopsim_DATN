@@ -1,0 +1,23 @@
+<!-- extends -->
+{% extends "order_base.html" %}
+<!-- load -->
+{% load static %}
+<!-- load -->
+{% load humanize %}
+<!-- Banner -->
+{% block content %}
+<div class="cart_section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 offset-lg-1">
+        <div class="cart_container text-center">
+          {% comment %}  {% endcomment %}
+          <div class="cart_title text-success text-center">Đặt hàng thành công</div>
+          <a class="stretched-link text-primary" href="{% url 'order-tracker' id=order_id %}">Bấm vào đây đễ theo dõi đơn hàng</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

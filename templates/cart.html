@@ -1,0 +1,101 @@
+<!-- extends -->
+{% extends "cart_base.html" %}
+<!-- load -->
+{% load static %}
+<!-- load -->
+{% load humanize %}
+<!-- Banner -->
+{% block content %}
+<div class="cart_section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 offset-lg-1">
+        <div class="cart_container">
+          {% comment %}  {% endcomment %}
+          {% if cart_items %}
+          <div class="cart_items">
+            <div class="cart_title text-center mb-4 font-weight-bold">Giỏ hàng</div>
+            <table class="table mb-0 table-hover cart_list">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center" style="white-space: nowrap;">Số điện thoại</th>
+                    <th scope="col" class="text-center" style="white-space: nowrap;">Nhà mạng</th>
+                    <th scope="col" class="text-right" style="white-space: nowrap;">Giá gốc</th>
+                    <th scope="col" class="text-right" style="white-space: nowrap;">Giảm</th>
+                    <th scope="col" class="text-right" style="white-space: nowrap;">Thành tiền</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for cart_item in cart_items %}
+                  <tr>
+                    <td class="text-center" style="white-space: nowrap;">
+                        <a href="{% url 'sim' slug_sim=cart_item.sim_slug %}" class="text-dark">
+                            {{cart_item.sim_phone_number}}
+                        </a>
+                    </td>
+                    <td class="text-center" style="white-space: nowrap;">
+                        <a href="{% url 'network' slug_network=cart_item.network_slug %}" class="text-dark">
+                            {{cart_item.network_name}}
+                        </a>
+                    </td>
+                    <td class="text-right" style="white-space: nowrap;">
+                        {{cart_item.get_original_price_str}}
+                    </td>
+                    <td class=" text-right" style="white-space: nowrap;">
+                        {{cart_item.get_discount}}
+                    </td>
+                    <td class="text-right" style="white-space: nowrap;">
+                        {{cart_item.get_sale_price_str}}
+                    </td>
+                    <td class="text-center" style="white-space: nowrap;">
+                        <form method="post" action="{% url 'remove-from-cart' %}" id="remove_form">
+                            {%csrf_token%}
+                            <input type="hidden" name="hiddenID" value="{{cart_item.id}}">
+                            <a  onclick="document.getElementById('remove_form').submit();"
+                              class="stretched-link text-danger">
+                                Bỏ ra
+                            </a>
+                        </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+          </div>
+
+          <!-- Order Total -->
+          <div class="order_total">
+            <div class="order_total_content text-md-right">
+              <div class="order_total_title">Tổng tiền: 
+                <strong class="text-dark">
+                {% for cart_item in cart_items|slice:":1" %}
+                    {{cart_item.get_total_price}}
+                    {% empty %}
+                {% endfor %}</strong>
+            </div> </div>
+              
+          </div>
+          {%else%}
+          
+          <div class="cart_title text-black-50 text-center">Giỏ hàng trống</div>
+          {%endif%}
+
+          <div class="cart_buttons text-center">
+            <a href="{% url 'cua-hang' %}" class="button cart_button_clear mr-0">
+              Tiếp tục mua hàng
+            </a>
+            
+            {% if cart_items %}
+            <a href="{% url 'place-order' %}" class="button cart_button_checkout ml-3">
+              Chuyển qua đặt hàng
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

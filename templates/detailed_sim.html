@@ -79,6 +79,15 @@
         </tr>
       </tbody>
     </table>
+    {% if addedState %}
+    <a href="#" class="btn btn-secondary disabled w-100" role="button" aria-disabled="true">Đã thêm vào giỏ hàng</a>
+    {% else %}
+    <form method="post" action="{% url 'add-to-cart' %}">
+      {% csrf_token %}
+      <input type="hidden" name="hiddenID" value="{{sim.id}}" />
+      <button type="submit" class="btn btn-primary w-100">Thêm vào giỏ hàng</button>
+    </form>
+    {% endif %}
     {% comment %}
     <div class="order_info d-flex flex-row">
       <form action="/shop/order/" method="post">

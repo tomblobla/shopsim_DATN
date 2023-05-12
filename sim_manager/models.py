@@ -113,12 +113,22 @@ class SIM(models.Model):
     def get_curr_price(self):
         new_price = self.price * (100 - self.discount) / 100
         return new_price
+    get_curr_price.short_description = "Giá hiện tại"
     
     def get_salepricestr(self):
         new_price = self.price * (100 - self.discount) / 100
         return "{:,.0f}".format(new_price) + " đ"
+    get_salepricestr.short_description = 'Giá giảm'
 
     def get_originalpricestr(self):
         return "{:,.0f}".format(self.price) + " đ"
-    get_salepricestr.short_description = 'Giá giảm'
     get_originalpricestr.short_description = 'Giá gốc'
+    
+    def get_tags(self):
+        return ", ".join([t.name for t in self.tags.all()])
+    get_tags.short_description = 'Loại SIM'
+    
+    def get_discount(self):
+        return str(self.discount) + '%'
+    get_discount.short_description = 'Giảm'
+

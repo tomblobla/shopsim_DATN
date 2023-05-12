@@ -1,0 +1,102 @@
+
+<!-- extends -->
+{% extends "invoice_base.html" %}
+<!-- load -->
+{% load static %}
+<!-- load -->
+{% load humanize %}
+<!-- Banner -->
+{% block content %}
+<div class="cart_section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 offset-lg-1">
+        <div class="cart_container">
+          {% comment %}  {% endcomment %}
+          <div class="cart_items">
+            <div class="cart_title text-center mb-4 font-weight-bold">Thông tin đơn hàng ngày</div>
+            <div class="h5 text-center mb-4 font-weight-bold">
+              <small><a  href="{% url 'order-tracker' id=order.id%}">{{order.order_date|date:"d/m/Y - H:i:s"}}</a></small>
+            </div>
+            <div class="h5 text-center mb-4 font-weight-bold font-italic text-success"><small>Tình trạng đơn hàng: {{order.get_order_status_display}}</small></div>
+            <div class="font-weight-bold mb-4 h5">Thông tin khách hàng</div>
+            
+            <div class="d-flex justify-content-between mb-3 ml-2" >
+                <div class="p-2 row"><div class="font-weight-bold">Họ và tên:</div>&nbsp;{{order.full_name}}</div>
+                <div class="p-2 row"><div class="font-weight-bold">Số điện thoại:</div>&nbsp;{{order.phone_number}}</div>
+                <div class="p-2 row"><div class="font-weight-bold">Email: </div>&nbsp;{{order.email}}</div>
+            </div>
+            <div class="d-flex justify-content-between mb-3 ml-2" >
+                <div class="p-2 row"><div class="font-weight-bold">Địa chỉ:</div>&nbsp;{{order.address}}</div>
+            </div>
+            <div class="d-flex justify-content-between mb-3 ml-2" >
+                <div class="p-2 row"><div class="font-weight-bold">Phương thức thanh toán:</div>&nbsp;{{order.get_payment_method_display}}</div>
+            </div>
+            <div class="d-flex justify-content-between mb-3 ml-2" >
+                <div class="p-2 row"><div class="font-weight-bold">Lời nhắn:</div>&nbsp;{{order.message}}</div>
+            </div>
+            <div class="font-weight-bold mb-4 h5">Thông tin giỏ hàng</div>
+            <div class="cart_list table-responsive">
+              <table class="table mb-0 table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col" class="text-center" style="white-space: nowrap;">Số điện thoại</th>
+                    <th scope="col" class="text-center" style="white-space: nowrap;">Nhà mạng</th>
+                    <th scope="col" class="text-right" style="white-space: nowrap;">Giá gốc</th>
+                    <th scope="col" class="text-right" style="white-space: nowrap;">Giảm</th>
+                    <th scope="col" class="text-right" style="white-space: nowrap;">Thành tiền</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order_item in orderItem %}
+                  <tr>
+                    <td class="text-center" style="white-space: nowrap;">
+                        <a href="{% url 'sim' slug_sim=order_item.sim_slug %}" class="text-dark">
+                            {{order_item.sim_phone_number}}
+                        </a>
+                    </td>
+                    <td class="text-center" style="white-space: nowrap;">
+                        <a href="{% url 'network' slug_network=order_item.network_slug %}" class="text-dark">
+                            {{order_item.network_name}}
+                        </a>
+                    </td>
+                    <td class="text-right" style="white-space: nowrap;">
+                        {{order_item.get_original_price_str}}
+                    </td>
+                    <td class=" text-right" style="white-space: nowrap;">
+                        {{order_item.get_discount}}
+                    </td>
+                    <td class="text-right" style="white-space: nowrap;">
+                        {{order_item.get_sale_price_str}}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Order Total -->
+          <div class="order_total h-auto">
+            <div class="order_total_content w-100">
+              <div class="d-flex mb-3">
+                <div class="order_total_title mr-auto">
+                  <div class="">Thông tin liên hệ:</div>
+                  
+                </div>
+                <div class="order_total_title ml-auto">
+                  Tổng tiền: 
+                  <strong class="text-dark">
+                  {{order.get_total_price}}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
