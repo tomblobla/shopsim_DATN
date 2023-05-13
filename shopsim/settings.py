@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'sim_manager',
     'customer',
+    'post',
     'order',
+    'ckeditor',
     'django.contrib.humanize',
 ]
 
@@ -162,3 +164,6 @@ EMAIL_HOST_USER = 'hotrongvinh2001@gmail.com'
 EMAIL_HOST_PASSWORD = 'gtchqbbphcboifws'
 
 DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
+
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800

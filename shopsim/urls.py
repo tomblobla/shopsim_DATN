@@ -34,5 +34,6 @@ urlpatterns = [
     path('load-more-sim/', views.SIMListView.as_view(), name='load-more-sim'),
     path('filter-sim/', views.SIMFilterListView.as_view(), name='filter-sim'),
     path('tai-khoan/', include('customer.urls')),
+    path('bai-viet/', include('post.urls')),
     path('don-hang/', include('order.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

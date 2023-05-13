@@ -8,6 +8,9 @@ from django.db.models import F, FloatField, ExpressionWrapper
 from django.db.models import Q
 from customer.models import CartItem
 
+from post.models import Post, Topic
+from post.serializers import PostSerializer, TopicSerializer
+
 def home(request):
     tagSerializer = TagSerializer(
         Tag.objects.all(), many=True)
@@ -18,6 +21,8 @@ def home(request):
     sale_sims = SIM.objects.all().filter(is_available=True, is_visible=True, discount__gt=0)[:9]
     sale_simSerializer = SIMSerializer(sale_sims, many=True)
     
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
     cart_count = 0
     if request.user.is_authenticated:
         cart_count = CartItem.objects.all().filter(customer = request.user).count()
@@ -27,12 +32,17 @@ def home(request):
         "networks": networkSerializer.data,
         "sale_sims": sale_simSerializer.data,
         "cart_count": cart_count,
+        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+        "topics": TopicSerializer(topics, many = True).data,
     }
 
     return render(request, 'home.html', context)
 
 
 def shop(request):
+    
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
     tagSerializer = TagSerializer(
         Tag.objects.all(), many=True)
     
@@ -58,6 +68,8 @@ def shop(request):
         "networks": networkSerializer.data,
         "sims": simSerializer.data,
         "cart_count": cart_count,
+        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+        "topics": TopicSerializer(topics, many = True).data,
     }
 
     return render(request, 'shop.html', context)
@@ -81,6 +93,8 @@ def network(request, slug_network):
         ).order_by('current_price'), many=True)
     
     
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
     cart_count = 0
     if request.user.is_authenticated:
         cart_count = CartItem.objects.all().filter(customer = request.user).count()
@@ -91,12 +105,16 @@ def network(request, slug_network):
         "sims": simSerializer.data,
         "curr_net": network.slug,
         "cart_count": cart_count,
+        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+        "topics": TopicSerializer(topics, many = True).data,
     }
 
     return render(request, 'shop.html', context)
 
 
 def tag(request, slug_tag):
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
     tagSerializer = TagSerializer(
         Tag.objects.all(), many=True)
     
@@ -124,6 +142,8 @@ def tag(request, slug_tag):
         "sims": simSerializer.data,
         "curr_tag": tag.slug,
         "cart_count": cart_count,
+        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+        "topics": TopicSerializer(topics, many = True).data,
     }
 
     return render(request, 'shop.html', context)
@@ -151,17 +171,17 @@ def sim(request, slug_sim):
     
     simSerializer = SIMSerializer(
         other_sims[:8], many=True)
+    addedState = False
     
-    cart_item = CartItem.objects.filter(sim=sim, customer=request.user).first()
-    
-    if cart_item:
-        addedState = True
-    else:
-        addedState = False
-    
-    
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
     cart_count = 0
     if request.user.is_authenticated:
+        cart_item = CartItem.objects.filter(sim=sim, customer=request.user).first()
+        if cart_item:
+            addedState = True
+        else:
+            addedState = False
         cart_count = CartItem.objects.all().filter(customer = request.user).count()
         
     context = {
@@ -171,6 +191,8 @@ def sim(request, slug_sim):
         "addedState": addedState,
         "othersims_samenetwork": simSerializer.data,
         "cart_count": cart_count,
+        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+        "topics": TopicSerializer(topics, many = True).data,
     }
 
     return render(request, 'detailed_sim.html', context)
@@ -193,6 +215,8 @@ def search_sim(request):
         ).order_by('current_price')
     
     
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
     cart_count = 0
     if request.user.is_authenticated:
         cart_count = CartItem.objects.all().filter(customer = request.user).count()
@@ -202,6 +226,8 @@ def search_sim(request):
         "networks": networkSerializer.data,
         "sims": SIMSerializer(sims, many=True).data,
         "cart_count": cart_count,
+        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+        "topics": TopicSerializer(topics, many = True).data,
     }
 
     return render(request, 'search_sim.html', context)

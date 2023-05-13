@@ -10,6 +10,9 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-10 offset-lg-1">
+        {% if not orders %}
+          <div class="text-center h4 text-secondary">Bạn không có đơn hàng nào</div>
+        {%endif%}
         {% for order in orders %}
         <div class="cart_container">
           {% comment %}  {% endcomment %}

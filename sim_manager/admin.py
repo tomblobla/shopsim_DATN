@@ -55,11 +55,12 @@ class SIMAdmin(admin.ModelAdmin):
         'get_discount',
         'created_date',
         'is_available',
+        'is_visible',
         'goto_sim',
     )
     
 
-    # list_filter = ['network__name', 'tags__name', 'discount']
+    list_filter = ['network__name', 'tags__name', 'discount', 'is_available', 'is_visible']
 
 
     readonly_fields = ['sim_img_preview', 'goto_sim']

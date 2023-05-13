@@ -79,7 +79,7 @@
             </div> </div>
               
           </div>
-        <form action="{% url 'place-order'%}" method="post">
+        <form action="{% url 'place-order'%}" method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="h5 font-weight-bold mt-5">Thông tin liên hệ</div>
 

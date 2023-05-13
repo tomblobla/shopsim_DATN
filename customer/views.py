@@ -27,6 +27,11 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView
 )
 
+
+from post.models import Post, Topic
+from post.serializers import PostSerializer, TopicSerializer
+
+
 def signup(request):
     if request.user.is_authenticated:
         return redirect('/')
@@ -108,6 +113,24 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             remember_me = form.cleaned_data.get('remember_me')
             
+            if not Customer.objects.get(username=username).is_active:
+                current_site = get_current_site(request)
+                user = Customer.objects.get(username = username)
+                mail_subject = 'Kích hoạt tài khoản trên simminhvu'
+                message = render_to_string('acc_active_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token':account_activation_token.make_token(user),
+                })
+                to_email = user.email
+                email = EmailMessage(
+                            mail_subject, message, to=[to_email]
+                )
+                email.send()
+                form.add_error(None, 'Tài khoản chưa được kích hoạt, đã gửi mail về lại, vui lòng ấn để kích hoạt')
+                return render(request, 'signin.html', {'form': form, 'title': 'Đăng nhập'})
+
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -223,12 +246,24 @@ def cart(request):
     cart_itemSerializer = CartItemSerializer(cart_items, many=True)
     
     cart_count = cart_items.count()
-        
+    
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
+    
+    available_count = 0
+    for item in cart_items:        
+        if item.sim.is_available == True:
+            available_count += 1
+        else:
+            item.delete()
+                            
     context = {
         "tags": tagSerializer.data,
         "networks": networkSerializer.data,
         "cart_items": cart_itemSerializer.data,
         "cart_count": cart_count,
+        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+        "topics": TopicSerializer(topics, many = True).data,
     }
 
     return render(request, 'cart.html', context)

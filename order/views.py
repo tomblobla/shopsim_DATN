@@ -12,6 +12,9 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from io import BytesIO
 
+from post.models import Post, Topic
+from post.serializers import PostSerializer, TopicSerializer
+
 def place_order(request):
     if not request.user.is_authenticated:
         return redirect('signin')
@@ -22,9 +25,42 @@ def place_order(request):
     networkSerializer = NetworkSerializer(
         Network.objects.all(), many=True)
     
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
+    
     cart_items = CartItem.objects.all().filter(customer=request.user)
     cart_itemSerializer = CartItemSerializer(cart_items, many=True)
-            
+    
+    available_count = 0
+    for item in cart_items:        
+        if item.sim.is_available == True:
+            available_count += 1
+        else:
+            item.delete()
+    
+    if available_count < cart_items.count():
+        if request.method == 'POST':
+            form = PlaceOrderForm(request.POST, request.FILES)
+        else:
+            initial_values = {
+                'full_name': request.user.last_name + ' ' + request.user.first_name,
+                'phone_number': request.user.phone_number,
+                'email': request.user.email,
+                'address': request.user.address,
+                'gender': request.user.gender,
+            }
+            form = PlaceOrderForm(initial=initial_values)
+
+        return render(request, 'place_order.html',
+                    context={
+                            "tags": tagSerializer.data,
+                            "networks": networkSerializer.data,
+                            "cart_count": cart_items.count(),
+                            "cart_items": cart_itemSerializer.data,
+                            "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                            "topics": TopicSerializer(topics, many = True).data,
+                            "form": request.form,
+                        })
         
     if request.method == 'POST':
         form = PlaceOrderForm(request.POST, request.FILES)
@@ -35,6 +71,8 @@ def place_order(request):
             
             order = form.save(commit=False)
             order.order_status = 'PENDING'
+            order.cccd_image = form.cleaned_data['cccd_image']
+            order.portrait_image = form.cleaned_data['portrait_image']
             order.customer = request.user
             order.save()
             for item in cart_items:
@@ -53,6 +91,8 @@ def place_order(request):
                 "tags": tagSerializer.data,
                 "networks": networkSerializer.data,
                 "cart_count": 0,
+                "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                "topics": TopicSerializer(topics, many = True).data,
                 "order_id": order.id,
             })
         else:
@@ -62,6 +102,8 @@ def place_order(request):
                         "networks": networkSerializer.data,
                         "cart_count": cart_items.count(),
                         "cart_items": cart_itemSerializer.data,
+                        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                        "topics": TopicSerializer(topics, many = True).data,
                         "form": form,
                     })
     else:
@@ -81,6 +123,8 @@ def place_order(request):
                         "networks": networkSerializer.data,
                         "cart_count": cart_items.count(),
                         "cart_items": cart_itemSerializer.data,
+                        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                        "topics": TopicSerializer(topics, many = True).data,
                         "form": form,
                     })
 
@@ -93,6 +137,9 @@ def cancel_order(request):
     
     networkSerializer = NetworkSerializer(
         Network.objects.all(), many=True)
+    
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
     
     cart_items = CartItem.objects.all().filter(customer=request.user)
     cart_itemSerializer = CartItemSerializer(cart_items, many=True)
@@ -137,6 +184,9 @@ def order_tracker(request, id):
     networkSerializer = NetworkSerializer(
         Network.objects.all(), many=True)
     
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
+    
     cart_items = CartItem.objects.all().filter(customer=request.user)
     
     orderItem = OrderItem.objects.all().filter(order=order)
@@ -147,6 +197,8 @@ def order_tracker(request, id):
                         "tags": tagSerializer.data,
                         "networks": networkSerializer.data,
                         "cart_count": cart_items.count(),
+                        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                        "topics": TopicSerializer(topics, many = True).data,
                         "order": order,
                         "orderItem": orderItemSerializer.data,
                     })
@@ -154,7 +206,6 @@ def order_tracker(request, id):
 # defining the function to convert an HTML file to a PDF file
 def html_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
-    html  = template.render(context_dict)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="invoice.pdf"'
     html = template.render(context_dict)
@@ -181,7 +232,6 @@ def order_pdf(request, id):
     orderItem = OrderItem.objects.all().filter(order=order)
     orderItemSerializer = OrderItemSerializer(orderItem, many=True)
     
-    template = get_template('invoice.html')
     context={
         "order": order,
         "orderItem": orderItemSerializer.data,
@@ -197,6 +247,8 @@ def order_pdf(request, id):
     
 
 def manage_order(request):
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
     if not request.user.is_authenticated:
         return redirect('signin')
     
@@ -217,4 +269,6 @@ def manage_order(request):
                         "networks": networkSerializer.data,
                         "cart_count": cart_items.count(),
                         "orders": orderSerializer.data,
+                        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                        "topics": TopicSerializer(topics, many = True).data,
                     })
