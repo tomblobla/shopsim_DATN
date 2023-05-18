@@ -27,6 +27,15 @@ def home(request):
     if request.user.is_authenticated:
         cart_count = CartItem.objects.all().filter(customer = request.user).count()
         
+    networks = Network.objects.all()
+    sim_networks = []
+
+    for network in networks:
+        sims = network.sims.filter(is_available=True, is_visible=True)[:6]
+        sim_networks.append((network, sims))
+
+    posts = Post.objects.all().order_by('-created_date')[:3]
+    
     context = {
         "tags": tagSerializer.data,
         "networks": networkSerializer.data,
@@ -34,6 +43,8 @@ def home(request):
         "cart_count": cart_count,
         "pinned_posts": PostSerializer(pinned_posts, many = True).data,
         "topics": TopicSerializer(topics, many = True).data,
+        'sim_networks': sim_networks,
+        "posts": PostSerializer(posts, many = True).data
     }
 
     return render(request, 'home.html', context)

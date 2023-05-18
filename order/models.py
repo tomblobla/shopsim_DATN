@@ -1,6 +1,7 @@
 from django.db import models
 from customer.models import Customer
 from sim_manager.models import SIM
+from django.utils.html import mark_safe
 
 class Order(models.Model):
     # Thông tin đơn hàng
@@ -45,6 +46,8 @@ class Order(models.Model):
     shipping_provider = models.CharField(max_length=100, blank=True, null=True, verbose_name='Nhà vận chuyển')
     ship_date = models.DateTimeField(blank=True, null=True, verbose_name='Ngày giao hàng')
 
+    transaction_id = models.IntegerField(null=True, blank=True, verbose_name='Mã giao dịch')
+
     def __str__(self):
         return f"{self.full_name}'s Order"
 
@@ -83,6 +86,23 @@ class Order(models.Model):
             total_price += item.sim.get_curr_price()
         return "{:,.0f}".format(total_price) + " đ"
     get_total_price.short_description = 'Tổng giá'
+    
+    def get_total_price_int(self):
+        total_price = 0
+        for item in OrderItem.objects.filter(order = self):
+            total_price += item.sim.get_curr_price()
+        return int(total_price)
+    
+    
+    def goto_invoice(self):  # new
+        
+        return mark_safe(f"""<a href="/don-hang/xem-hoa-don/{self.id}" style="display: inline-block; padding: 7px 15px; border: none; border-radius: 5px; color: #fff; background-color: #47bac1; text-decoration: none; transition: all 0.3s ease;"
+                         onmouseover="this.style.backgroundColor='#639af5'"
+                            onmouseout="this.style.backgroundColor='#47bac1'"
+  >
+                Xem hóa đơn
+                </a>""")
+    goto_invoice.short_description = ""
 
 class OrderItem(models.Model):
     sim = models.ForeignKey(SIM, on_delete=models.CASCADE, verbose_name="Sim", related_name="order_item")

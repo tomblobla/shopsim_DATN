@@ -167,3 +167,10 @@ DEFAULT_FROM_EMAIL = 'noreply<no_reply@domain.com>'
 
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
+
+
+VNPAY_RETURN_URL = 'http://localhost:8000/don-hang/ket-qua-thanh-toan'  # get from config
+VNPAY_PAYMENT_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'  # get from config
+VNPAY_API_URL = 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
+VNPAY_TMN_CODE = '4FLEQX1K'  # Website ID in VNPAY System, get from config
+VNPAY_HASH_SECRET_KEY = 'JMAEBJSFTGKQPYRGTEJRICRPDSEHIDMU'  # Sec

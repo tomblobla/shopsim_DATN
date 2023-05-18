@@ -12,13 +12,8 @@
       <div class="col-lg-10 offset-lg-1">
         <div class="cart_container text-center">
           {% comment %}  {% endcomment %}
-          <div class="cart_title text-success text-center">Đặt hàng thành công</div>
+          <div class="cart_title font-weight-bold text-center">{{message}}</div>
           <a class="stretched-link text-primary" href="{% url 'order-tracker' id=order_id %}">Bấm vào đây đễ theo dõi đơn hàng</a>
-          
-          <div class="cart_title text-warning text-center mt-4">Vui lòng chuyển vào tài khoản dưới cùng với lời nhắn sim đặt</div>
-          <div class="h6 text-center"><strong>Số tài khoản: </strong>5510109331003</div>
-          <div class="h6 text-center"><strong>Tên tài khoản: </strong>LE MINH GIAP</div>
-          <div class="h6 text-center"><strong>Tên tài khoản: </strong>MB BANK</div>
         </div>
       </div>
     </div>

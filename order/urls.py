@@ -7,4 +7,6 @@ urlpatterns = [
     path('xem-hoa-don/<int:id>/', views.order_pdf, name = 'order-invoice'),
     path('quan-ly-don/', views.manage_order, name = 'manage-order'),
     path('huy-don/', views.cancel_order, name = 'cancel-order'),
+    path('ket-qua-thanh-toan/', views.payment_return, name='payment-return'),
+    path('thanh-toan/', views.payment_view, name='payment'),
 ]

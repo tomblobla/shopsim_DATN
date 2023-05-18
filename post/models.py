@@ -22,6 +22,7 @@ class Post(models.Model):
     slug = models.SlugField(unique=True, verbose_name='Đường dẫn đẹp')
     content = RichTextField(verbose_name='Nội dung')
     is_pinned = models.BooleanField(default=False, verbose_name='Ghim')
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title

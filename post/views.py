@@ -18,11 +18,15 @@ def post(request, topic_slug, post_slug):
     
     pinned_posts = Post.objects.filter(is_pinned=True)
     topics = Topic.objects.all()
+    c_count = 0
     
+    if request.user.is_authenticated:
+        c_count = CartItem.objects.filter(customer=request.user).count()
+        
     context = {
         "tags": tagSerializer.data,
         "networks": networkSerializer.data,
-        "cart_count": CartItem.objects.filter(customer=request.user).count(),
+        "cart_count": c_count,
         "pinned_posts": PostSerializer(pinned_posts, many = True).data,
         "topics": TopicSerializer(topics, many = True).data,
         "post": post,
@@ -43,10 +47,15 @@ def topic_post(request, topic_slug):
     pinned_posts = Post.objects.filter(is_pinned=True)
     topics = Topic.objects.all()
     
+    c_count = 0
+    
+    if request.user.is_authenticated:
+        c_count = CartItem.objects.filter(customer=request.user).count()
+        
     context = {
         "tags": tagSerializer.data,
         "networks": networkSerializer.data,
-        "cart_count": CartItem.objects.filter(customer=request.user).count(),
+        "cart_count": c_count,
         "pinned_posts": PostSerializer(pinned_posts, many = True).data,
         "topics": TopicSerializer(topics, many = True).data,
         "posts": PostSerializer(posts, many = True).data
@@ -67,10 +76,14 @@ def all_post(request):
     pinned_posts = Post.objects.filter(is_pinned=True)
     topics = Topic.objects.all()
     
+    c_count = 0
+    
+    if request.user.is_authenticated:
+        c_count = CartItem.objects.filter(customer=request.user).count()
     context = {
         "tags": tagSerializer.data,
         "networks": networkSerializer.data,
-        "cart_count": CartItem.objects.filter(customer=request.user).count(),
+        "cart_count": c_count,
         "pinned_posts": PostSerializer(pinned_posts, many = True).data,
         "topics": TopicSerializer(topics, many = True).data,
         "posts": PostSerializer(posts, many = True).data

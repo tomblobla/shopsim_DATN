@@ -81,8 +81,15 @@
                   Tổng tiền: 
                   <strong class="text-dark">
                   {{order.get_total_price}}</strong>
+                  {% if not order.is_paid and order.payment_method != 'COD' %}
+                  <form method="post" action="{% url 'payment' %}">
+                    {%csrf_token %}
+                    <input type="hidden" name="hiddenID" value="{{order.id}}" />
+                    <button type="button" class="btn btn-outline-primary w-100 ">Thanh toán</button>
+                  </form>
+                  {%endif %}
                   <br>
-                  <a href="" class="btn btn-primary w-100">Xem hóa đơn</a>
+                  <a href="{% url 'order-invoice' id=order.id %}" class="btn btn-primary w-100">Xem hóa đơn</a>
                   <br>
                   {% if order.order_status == "PENDING" %}
                   <form method="post" action="{% url 'cancel-order' %}">

@@ -9,11 +9,18 @@ from .serializers import OrderSerializer, OrderItemSerializer
 from io import StringIO
 from django.http import HttpResponse
 from django.template.loader import get_template
-from xhtml2pdf import pisa
 from io import BytesIO
-
+from shopsim import settings
 from post.models import Post, Topic
 from post.serializers import PostSerializer, TopicSerializer
+from .vnpay import vnpay
+
+
+
+from django.template.loader import render_to_string
+from weasyprint import HTML
+
+
 
 def place_order(request):
     if not request.user.is_authenticated:
@@ -87,6 +94,10 @@ def place_order(request):
                 orderItem.save()
                 item.delete()
             # Thông báo đặt hàng thành công
+            
+            if order.payment_method == 'TRANSFER':
+                return payment(request = request, order_id=order.id)
+            
             return render(request, 'place_order_success.html', context={
                 "tags": tagSerializer.data,
                 "networks": networkSerializer.data,
@@ -203,17 +214,22 @@ def order_tracker(request, id):
                         "orderItem": orderItemSerializer.data,
                     })
     
-# defining the function to convert an HTML file to a PDF file
-def html_to_pdf(template_src, context_dict={}):
-    template = get_template(template_src)
+
+def generate_pdf(request, context):
+    # Get the HTML template
+    html_string = render_to_string('invoice.html', context=context)
+
+    # Generate PDF using weasyprint
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    # Create a HTTP response with PDF content type
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="invoice.pdf"'
-    html = template.render(context_dict)
 
-    pisa_status = pisa.CreatePDF(html, dest=response)
+    # Set the content disposition header to force download the PDF file
+    response['Content-Disposition'] = 'inline; filename="hddt.pdf"'
 
-    if pisa_status.err:
-      return HttpResponse(f'We had some errors <pre>{html}</pre>')
+    # Write the PDF file content to the response
+    response.write(pdf_file)
 
     return response
  
@@ -226,7 +242,7 @@ def order_pdf(request, id):
     
     order = Order.objects.get(id = id)
     
-    if order.customer != request.user:
+    if order.customer != request.user and not request.user.is_admin:
         return redirect('/')
 
     orderItem = OrderItem.objects.all().filter(order=order)
@@ -241,8 +257,9 @@ def order_pdf(request, id):
     # response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
 
     
-    pdf = html_to_pdf('invoice.html', context)
-    return HttpResponse(pdf, content_type='application/pdf')
+    # pdf = html_to_pdf('invoice.html', context)
+    # return HttpResponse(pdf, content_type='application/pdf')
+    return generate_pdf(request, context)
     
     
 
@@ -272,3 +289,128 @@ def manage_order(request):
                         "pinned_posts": PostSerializer(pinned_posts, many = True).data,
                         "topics": TopicSerializer(topics, many = True).data,
                     })
+    
+def payment_view(request):
+    if request.method == 'POST':
+        hiddenID = request.POST.get('hiddenID')
+        return payment(order_id = hiddenID, request = request)
+    else:
+        redirect('/')
+    
+import hashlib
+import hmac
+
+def hmacsha512(key, data):
+    byteKey = key.encode('utf-8')
+    byteData = data.encode('utf-8')
+    return hmac.new(byteKey, byteData, hashlib.sha512).hexdigest()
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+from datetime import datetime
+
+def payment(order_id, request):
+
+    if request.method == 'POST':
+        # Process input data and build url payment
+        order_id = order_id
+        order = Order.objects.get(id=order_id)
+        amount = order.get_total_price_int()
+        ipaddr = get_client_ip(request)
+        # Build URL Payment
+        vnp = vnpay()
+        vnp.requestData['vnp_Version'] = '2.1.0'
+        vnp.requestData['vnp_Command'] = 'pay'
+        vnp.requestData['vnp_TmnCode'] = settings.VNPAY_TMN_CODE
+        vnp.requestData['vnp_Amount'] = amount * 100
+        vnp.requestData['vnp_CurrCode'] = 'VND'
+        vnp.requestData['vnp_TxnRef'] = order_id
+        vnp.requestData['vnp_OrderInfo'] = 'Thanh toan hoa don ngay ' + order.order_date.strftime("%m/%d/%Y, %H:%M:%S")
+        vnp.requestData['vnp_OrderType'] = 'billpayment'
+        vnp.requestData['vnp_Locale'] = 'vn'
+
+
+        vnp.requestData['vnp_CreateDate'] = datetime.now().strftime('%Y%m%d%H%M%S')  # 20150410063022
+        vnp.requestData['vnp_IpAddr'] = ipaddr
+        vnp.requestData['vnp_ReturnUrl'] = settings.VNPAY_RETURN_URL
+        vnpay_payment_url = vnp.get_payment_url(settings.VNPAY_PAYMENT_URL, settings.VNPAY_HASH_SECRET_KEY)
+        print(vnpay_payment_url)
+        return redirect(vnpay_payment_url)
+    else:
+        return redirect('/')
+
+
+def payment_return(request):
+    tagSerializer = TagSerializer(
+        Tag.objects.all(), many=True)
+    
+    networkSerializer = NetworkSerializer(
+        Network.objects.all(), many=True)
+    
+    pinned_posts = Post.objects.filter(is_pinned=True)
+    topics = Topic.objects.all()
+    
+    inputData = request.GET
+    if inputData:
+        vnp = vnpay()
+        vnp.responseData = inputData.dict()
+        order_id = inputData['vnp_TxnRef']
+        amount = int(inputData['vnp_Amount']) / 100
+        order_desc = inputData['vnp_OrderInfo']
+        vnp_TransactionNo = inputData['vnp_TransactionNo']
+        vnp_ResponseCode = inputData['vnp_ResponseCode']
+        vnp_TmnCode = inputData['vnp_TmnCode']
+        vnp_PayDate = inputData['vnp_PayDate']
+        vnp_BankCode = inputData['vnp_BankCode']
+        vnp_CardType = inputData['vnp_CardType']
+        if vnp.validate_response(settings.VNPAY_HASH_SECRET_KEY):
+            if vnp_ResponseCode == "00":
+                order = Order.objects.get(id=order_id)
+                date_format = "%Y%m%d%H%M%S"
+
+                # Convert the string to a datetime object
+                datetime_obj = datetime.strptime(vnp_PayDate, date_format)
+
+                order.paid_date = datetime_obj
+                order.is_paid = True
+                order.transaction_id = vnp_TransactionNo
+                order.save()
+                return render(request, "payment_return.html", context={
+                        "tags": tagSerializer.data,
+                        "networks": networkSerializer.data,
+                        "cart_count": 0,
+                        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                        "topics": TopicSerializer(topics, many = True).data,
+                        "message": "Thanh toán thành công",
+                        "order_id": order_id,
+                    })
+            else:
+                return render(request, "payment_return.html", context={
+                        "tags": tagSerializer.data,
+                        "networks": networkSerializer.data,
+                        "cart_count": 0,
+                        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                        "topics": TopicSerializer(topics, many = True).data,
+                        "message": "Thanh toán thất bại",
+                        "order_id": order_id,
+                    })
+        else:
+            return render(request, "payment_return.html", context={
+                        "tags": tagSerializer.data,
+                        "networks": networkSerializer.data,
+                        "cart_count": 0,
+                        "pinned_posts": PostSerializer(pinned_posts, many = True).data,
+                        "topics": TopicSerializer(topics, many = True).data,
+                        "message": "Thanh toán thất bại",
+                        "order_id": order_id,
+                    })
+    else:
+        return redirect("/")
+
