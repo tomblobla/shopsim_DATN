@@ -140,6 +140,7 @@ def place_order(request):
                     })
 
 def cancel_order(request):
+    print('cancel')
     if not request.user.is_authenticated:
         return redirect('signin')
     

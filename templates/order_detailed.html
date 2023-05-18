@@ -95,10 +95,10 @@
                   <form method="post" action="{% url 'cancel-order' %}">
                     {%csrf_token %}
                     <input type="hidden" name="hiddenID" value="{{order.id}}" />
-                    <button type="button" class="btn btn-outline-danger w-100 ">Hủy đơn</button>
+                    <button type="submit" class="btn btn-outline-danger w-100 ">Hủy đơn</button>
                   </form>
                   {%else %}
-                  <button type="hidden" class="btn btn-outline-danger w-100 btn-disabled" disabled>Hủy đơn</button>
+                  <button class="btn btn-outline-danger w-100 btn-disabled" disabled>Hủy đơn</button>
                   {%endif %}
                 </div>
               </div>
